@@ -4,7 +4,7 @@ import DocumentCard from '../DocumentCard';
 import ContextWindow from '../ContextWindow';
 import TokenMetrics from '../TokenMetrics';
 
-function StepPanel({ step, trace, corpus, label, accentColor }) {
+function StepPanel({ step, corpus, label, accentColor }) {
   if (!step) return null;
   const borderClass = accentColor === 'red' ? 'border-red-900/50' : 'border-green-900/50';
   const bgClass = accentColor === 'red' ? 'bg-red-950/10' : 'bg-green-950/10';
@@ -68,11 +68,6 @@ export default function TraceViewer({ scenario }) {
     return () => clearTimeout(t);
   }, [isPlaying, currentStep, advance]);
 
-  useEffect(() => {
-    setCurrentStep(0);
-    setIsPlaying(false);
-  }, [scenario]);
-
   const vanillaStep = vanillaSteps[currentStep];
   const pruningStep = pruningSteps[currentStep];
   const isLastStep = currentStep >= maxSteps - 1;
@@ -122,8 +117,8 @@ export default function TraceViewer({ scenario }) {
       />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <StepPanel step={vanillaStep} trace={scenario?.vanillaTrace} corpus={corpus} label="🔴 Vanilla RAG" accentColor="red" />
-        <StepPanel step={pruningStep} trace={scenario?.pruningTrace} corpus={corpus} label="🟢 Context Pruning" accentColor="green" />
+        <StepPanel step={vanillaStep} corpus={corpus} label="🔴 Vanilla RAG" accentColor="red" />
+        <StepPanel step={pruningStep} corpus={corpus} label="🟢 Context Pruning" accentColor="green" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

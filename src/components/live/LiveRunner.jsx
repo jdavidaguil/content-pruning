@@ -5,6 +5,11 @@ import { queryOpenAI } from '../../adapters/openaiAdapter';
 import { queryLocal } from '../../adapters/localAdapter';
 import TraceViewer from '../demo/TraceViewer';
 
+// Approximate token count per context document (heuristic: ~180 tokens/doc average)
+const TOKENS_PER_DOC = 180;
+// Base token overhead per request (system prompt + query formatting)
+const BASE_TOKEN_OVERHEAD = 300;
+
 function pruneDocuments(retrievedDocs, contextIds) {
   return retrievedDocs.map(doc => {
     if (contextIds.includes(doc.id)) {
@@ -41,6 +46,9 @@ export default function LiveRunner({ backendConfig, corpus, query, onReset }) {
     let contextIds = [];
 
     try {
+      // Sub-queries: initial query, a detail-seeking follow-up, and a summary step.
+      // Note: this is a simple template-based decomposition. For complex multi-hop queries,
+      // a dedicated query-decomposition LLM call would yield better results.
       const subQueries = [query, `More details about: ${query}`, `Summarize findings for: ${query}`];
 
       for (let i = 0; i < subQueries.length; i++) {
@@ -62,8 +70,8 @@ export default function LiveRunner({ backendConfig, corpus, query, onReset }) {
           finalAnswer = await callLLM(backendConfig, messages);
         }
 
-        const tokens = contextIds.length * 180 + 300;
-        const latency = Date.now() - t0 + Math.floor(Math.random() * 500);
+        const tokens = contextIds.length * TOKENS_PER_DOC + BASE_TOKEN_OVERHEAD;
+        const latency = Date.now() - t0;
         recorder.recordStep({
           step: i + 1,
           query: subQuery,

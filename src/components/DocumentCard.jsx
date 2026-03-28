@@ -42,9 +42,9 @@ function StatusBadge({ kept, pruneReason, inContext }) {
 }
 
 export default function DocumentCard({ doc, status = 'default', animate = false }) {
-  const { kept, prune_reason, inContext } = status === 'default'
-    ? { kept: doc.kept, prune_reason: doc.prune_reason, inContext: false }
-    : { kept: status === 'kept', prune_reason: doc.prune_reason, inContext: status === 'in-context' };
+  const { kept, inContext } = status === 'default'
+    ? { kept: doc.kept, inContext: false }
+    : { kept: status === 'kept', inContext: status === 'in-context' };
 
   const baseClasses = 'rounded-xl border p-3 transition-all duration-500';
   const stateClasses = kept === false

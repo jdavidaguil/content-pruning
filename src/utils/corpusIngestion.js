@@ -9,6 +9,9 @@ export async function ingestFile(file) {
 
 async function ingestText(file) {
   const text = await file.text();
+  // Note: this regex splits on sentence-ending punctuation and may not handle all edge cases
+  // (e.g., abbreviations like "Dr.", decimal numbers). For production use, consider a
+  // dedicated sentence tokenizer library.
   const chunks = text.match(/[^.!?]+[.!?]+/g) || [text];
   return chunks.map((chunk, i) => ({
     id: `doc_${i}`, title: `Chunk ${i + 1}`,

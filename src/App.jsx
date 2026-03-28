@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PrivacyBadge from './components/PrivacyBadge';
 import HowItWorksModal from './components/HowItWorksModal';
 import ScenarioSelector from './components/demo/ScenarioSelector';
@@ -12,18 +12,11 @@ import { sampleScenarios } from './data/sampleTraces';
 export default function App() {
   const [mode, setMode] = useState('demo');
   const [selectedScenario, setSelectedScenario] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(() => !localStorage.getItem('howItWorksSeen'));
   const [backendConfig, setBackendConfig] = useState(null);
   const [corpus, setCorpus] = useState([]);
   const [query, setQuery] = useState('');
   const [liveRunStarted, setLiveRunStarted] = useState(false);
-
-  useEffect(() => {
-    if (!localStorage.getItem('howItWorksSeen')) {
-      setShowModal(true);
-      localStorage.setItem('howItWorksSeen', '1');
-    }
-  }, []);
 
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100">
@@ -70,7 +63,7 @@ export default function App() {
                 >
                   ← Back to scenarios
                 </button>
-                <TraceViewer scenario={selectedScenario} />
+                <TraceViewer key={selectedScenario?.id} scenario={selectedScenario} />
               </div>
             )}
           </div>
@@ -98,7 +91,7 @@ export default function App() {
         )}
       </main>
 
-      {showModal && <HowItWorksModal onClose={() => setShowModal(false)} />}
+      {showModal && <HowItWorksModal onClose={() => { localStorage.setItem('howItWorksSeen', '1'); setShowModal(false); }} />}
     </div>
   );
 }
