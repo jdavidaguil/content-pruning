@@ -76,7 +76,8 @@ export default function LiveRunner({ backendConfig, corpus, query, onReset }) {
         });
       }
 
-      const trace = recorder.finalize(null);
+      const lastStep = recorder.getTrace().steps[subQueries.length - 1];
+      const trace = recorder.finalize(lastStep?.final_answer || null);
       setLiveScenario({
         id: 'live',
         title: 'Live Run',

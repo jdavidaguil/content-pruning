@@ -1,9 +1,15 @@
 const COST_PER_1K = 0.002;
 const TOKEN_LIMIT = 16384;
 
+const COLOR_CLASSES = {
+  blue: 'bg-blue-500',
+  purple: 'bg-purple-500',
+  green: 'bg-green-500',
+};
+
 function MetricBar({ value, max, color = 'blue' }) {
   const pct = Math.min(100, (value / max) * 100);
-  const colorClass = pct > 80 ? 'bg-red-500' : pct > 60 ? 'bg-orange-500' : `bg-${color}-500`;
+  const colorClass = pct > 80 ? 'bg-red-500' : pct > 60 ? 'bg-orange-500' : (COLOR_CLASSES[color] || 'bg-blue-500');
   return (
     <div className="w-full bg-gray-700 rounded-full h-1.5">
       <div className={`${colorClass} h-1.5 rounded-full transition-all duration-700`} style={{ width: `${pct}%` }} />
